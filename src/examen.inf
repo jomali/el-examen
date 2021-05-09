@@ -965,7 +965,7 @@ Include "vorple-screen-effects.h";
 	Utils.set_grammatical_inflection(SECOND_PERSON_PRESENT);
 
 	!! Establece el estilo del inventario:
-	!! inventory_style = ENGLISH_BIT + RECURSE_BIT + FULLINV_BIT;
+	inventory_style = ENGLISH_BIT + RECURSE_BIT + FULLINV_BIT;
 
 	!! Establece el PC (player character)
 	ChangePlayer(Eva);
@@ -1091,7 +1091,7 @@ Include ">examenGrammar.inf";
 !!
 !!------------------------------------------------------------------------------
 
-Include ">baronClasses.inf";
+Include ">examenClasses.inf";
 Include ">baronMenu.inf";
 Include ">examenObjects.inf";
 Include ">baronTutorial.inf";

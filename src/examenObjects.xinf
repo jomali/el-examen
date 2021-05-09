@@ -65,13 +65,50 @@ Room	Limbo "En algún lugar…"
 ;
 
 !! @Eva
-Character Eva "protagonista" Limbo
+Character -> Eva "protagonista"
 	has
 		female proper,
 	with
 		name_f 'personaje' 'protagonista',
 		gender G_FEMENINO,
 		!!
+;
+
+!! @Ropa
+Item -> -> Ropa "ropa"
+	class Clothes,
+	has
+		female worn,
+	with
+		name_f 'camisa' 'camiseta' 'indumentaria' 'ropa',
+		name_fp 'indumentarias' 'ropas',
+		name_m 'atuendo' 'calzado' 'pantalon',
+		name_mp 'atuendos' 'pantalones',
+		gender G_FEMENINO,
+		adjectives 'naranja',
+		!!
+	description [
+		parentObj;
+		parentObj = parent(self);
+		if (parentObj == player && self has worn) {
+			print "Vistes ropa";
+		} else {
+			print "Tu ropa es";
+		}
+		print " cómoda y aburrida, desfasada en al menos dos temporadas. Gris, salvo por el acento de color que pone tu camiseta, de un naranja muy vivo.";
+		if (parentObj == Perchero) {
+			print "^^
+			Cuelga todo [del Perchero].";
+		} else if (parentObj == real_location) {
+			print "^^
+			Lo has dejado todo hecho un rebujo en el suelo.";
+		} else if (parentObj has supporter) {
+			print "^^
+			Lo has dejado todo hecho un rebujo en [el parentObj].";
+		}
+		new_line;
+		return true;
+	],
 ;
 
 !! @
@@ -164,7 +201,7 @@ Indoors Vestidor "Vestidor"
 		initial [;
 			if (self hasnt visited) {
 				new_line;
-				print "La llamarada de la ignición satura la imagen y todo se vuelve blanco por un instante. El transbordador se eleva entonces sobre una lanza de fuego y humo hasta abandonar el plano.
+				print "La llamarada provocada por la ignición satura la imagen y todo se vuelve blanco por un instante. El transbordador se eleva entonces sobre una lanza de fuego y humo hasta abandonar el plano.
 				^^
 				—Ven a trabajar con nosotros y conviértete en astronauta —dice una voz en off mientras el logo de *New Horizons LLC* pasa a ocupar [el Monitor]—. Te esperamos.";
 				new_line;
@@ -347,7 +384,15 @@ Indoors SalaReconocimiento "Sala de reconocimiento"
 			if (self.counter == 1) {
 				StopDaemon(self);
 				new_line;
-				print "Aparece el médico.";
+				print "—Buenos días.
+				^^
+				Al girarte ves a un hombre que acaba de entrar en la sala por una puerta lateral. Va vestido con un uniforme de un color lechoso similar al de las paredes.
+				^^
+				—";
+				if (Ropa hasnt worn) {
+					print "Vaya, no era necesario que se quitase la ropa. No importa. ";
+				}
+				print "Siéntese, por favor —dice, indicándote [el Sillon] con un gesto.";
 				new_line;
 				return true;
 			}
@@ -357,7 +402,7 @@ Indoors SalaReconocimiento "Sala de reconocimiento"
 		description [;
 			print "En comparación con el reducido espacio [del DirVestidor] esta habitación parece enorme";
 			if (self hasnt visited) {
-				print ". Un efecto que se ve reforzado gracias a [un Espejo] que cubre una de las paredes casi en su totalidad y porque prácticamente no hay mobiliario alguno. Lo único destacable es [un Sillon], en medio de la sala, sobre el que se descuelga desde el techo algún tipo de [Dispositivo] con lo que parece la forma de un casco.";
+				print ". Un efecto que se ve reforzado gracias [al Espejo] que cubre una de las paredes casi en su totalidad, y a que prácticamente no hay mobiliario alguno. Los únicos elementos destacables son un [Sillon](sillón) médico colocado en mitad de la sala, y [el Dispositivo] con forma de casco —ignoras de qué se trata— que se descuelga desde el techo, inmediatamente sobre él.";
 			} else {
 				print ". Un efecto reforzado por [el Espejo] que cubre una de las paredes casi en su totalidad y por el mobiliario mínimo: [el Sillon] que ocupa el centro de la sala; [una Mesita]; [un Extintor] enganchado a la pared; [el Dispositivo], sea lo que sea, que se descuelga por cables desde el techo y termina en lo que lo que parece la forma de un casco, justo encima [del Sillon].";
 
@@ -399,7 +444,7 @@ Atrezzo -> Espejo "espejo"
 		male,
 	with
 		name_m 'espejo' 'reflejo',
-		gender G_FEMENINO,
+		gender G_MASCULINO,
 		!!
 		reset [;
 			self.is_broken = false;
@@ -436,7 +481,7 @@ Item -> Mesita
 !! @Puerta
 Atrezzo -> Puerta "puerta"
 	has
-		concealed female,
+		concealed female locked openable,
 	with
 		name_f 'puerta',
 		gender G_FEMENINO,
@@ -445,15 +490,11 @@ Atrezzo -> Puerta "puerta"
 ;
 
 !! @Sillon
-HeavyItem -> Sillon
+HeavyItem -> Sillon "sillón"
 	class SmartEnterable,
 	has
 		concealed enterable male supporter,
 	with
-		short_name [;
-			print "[](sillón:REMARKABLE_OBJECT) médico";
-			return true;
-		],
 		name_m 'asiento' 'sillon',
 		gender G_MASCULINO,
 		adjectives 'medico',
