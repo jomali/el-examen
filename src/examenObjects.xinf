@@ -1,0 +1,512 @@
+
+
+!!==============================================================================
+!!
+!!	EL EXAMEN
+!!	Definición de objetos
+!!
+!!==============================================================================
+!!
+!!	Archivo:		examenObjects.xinf
+!!	Autor(es):		J. Francisco Martín <jfm.lisaso@gmail.com>
+!!	Idioma:			ES (Español)
+!!	Sistema:		Inform-INFSP 6
+!!	Plataforma:		Máquina-Z/Glulx
+!!	Versión:		0.0
+!!	Fecha:			2021/05/XX
+!!
+!!------------------------------------------------------------------------------
+!!
+!!	Este archivo forma parte de la ficción interactiva EL EXAMEN.
+!!
+!!	EL EXAMEN es software libre: usted puede redistribuirlo y/o
+!!	modificarlo bajo los términos de la Licencia Pública General
+!!	GNU publicada por la Fundación para el Software Libre, ya
+!!	sea la versión 3 de la Licencia, o (a su elección) cualquier
+!!	versión posterior.
+!!
+!!	EL EXAMEN se distribuye con la esperanza de que sea útil,
+!!	pero SIN GARANTÍA ALGUNA; ni siquiera la garantía implícita
+!!	MERCANTIL o de APTITUD PARA UN PROPÓSITO DETERMINADO.
+!!	Consulte los detalles de la Licencia Pública General GNU
+!!	para más información.
+!!
+!!	Debería haber recibido una copia de la Licencia Pública
+!!	General GNU junto a EL EXAMEN. En caso contrario, consulte
+!!	<http://www.gnu.org/licenses/>.
+!!
+!!	Copyright (c) 2021, J. Francisco Martín
+!!
+!!------------------------------------------------------------------------------
+
+
+!!==============================================================================
+!!
+!!	1)	En algún lugar…
+!!
+!!------------------------------------------------------------------------------
+
+!! @Limbo
+Room	Limbo "En algún lugar…"
+ has	male,
+ with	name_f	'babia' 'parte',
+		name_m	'limbo' 'lugar' 'sueno' 'vacio',
+		gender	G_MASCULINO,
+		adjectives 'algun' 'alguna',
+		!!------------------
+		description [;
+			print "Más allá de la barrera casi insuperable que separa la realidad de todo lo demás. Un lugar etéreo, donde la vida, la materia y la vitalidad no son necesariamente constantes; un lugar donde el tiempo y el espacio no existen tal y como los capta nuestro ser despierto…";
+			if (self hasnt visited) {
+				print " *bienvenido al mundo del sueño*.";
+			}
+			new_line;
+			return true;
+		],
+;
+
+!! @Eva
+Character Eva "protagonista" Limbo
+	has
+		female proper,
+	with
+		name_f 'personaje' 'protagonista',
+		gender G_FEMENINO,
+		!!
+;
+
+!! @
+Atrezzo "paredes"
+	has
+		female,
+	with
+		found_in [;
+			if (real_location ofclass Indoors && real_location ~= Vestidor) {
+				return true;
+			}
+		],
+		name_f 'pared',
+		name_fp 'paredes',
+		name_m 'muro' 'recubrimiento' 'tabique',
+		name_mp 'muros' 'recubrimientos' 'tabiques',
+		gender G_FEMENINO,
+		adjectives 'crema' 'plastico',
+		!!
+		description [;
+			print "El recubrimiento plástico de las paredes está tintado con un agradable color crema";
+			if (self hasnt described) {
+				print ". Observas que no hay ángulos en toda la habitación; los distintos planos se difuminan unos sobre otros formando suaves curvas";
+			}
+			print ".";
+			new_line;
+			return true;
+		],
+;
+
+
+!!==============================================================================
+!!
+!!	2) Vestidor
+!!
+!!------------------------------------------------------------------------------
+
+!! @DirVestidor
+AdjacentRoom DirVestidor "vestidor"
+	has
+		male,
+	with
+		found_in SalaReconocimiento,
+		name_f 'cabina',
+		name_m 'cambiador' 'vestidor',
+		gender G_MASCULINO,
+		!!
+		adjacent_room Vestidor,
+		before [;
+			Enter:
+				self.AdjacentRoom::before();
+				return true;
+		],
+;
+
+!! @Vestidor
+Indoors Vestidor "Vestidor"
+	has
+		female,
+	with
+		name_f 'cabina',
+		name_m 'cambiador' 'vestidor',
+		gender G_FEMENINO,
+		!!
+		b_to [;
+			<<Enter DirSalida>>;
+		],
+		description [;
+			print "Estás en un habitáculo de apenas dos pasos de largo por dos de ancho, con puertas enfrentadas que conducen [a la DirSalida] y [a la DirSalaReconocimiento]. Tiene un pequeño [Banco](banco)";
+			if (Perchero in self) {
+				print " y [un Perchero]";
+				if (true) {
+					print " vací[o Perchero]";
+				} else {
+					print " con cosas";
+				}
+				print " en una esquina";
+			}
+			print ".^^
+			Una [Monitor](pantalla) colgada a la altura de tu cabeza repite en bucle mensajes publicitarios sobre la compañía.";
+			new_line;
+			return true;
+		],
+		f_to [;
+			<<Enter DirSalaReconocimiento>>;
+		],
+		in_to [;
+			<<Enter DirSalaReconocimiento>>;
+		],
+		initial [;
+			if (self hasnt visited) {
+				new_line;
+				print "La llamarada de la ignición satura la imagen y todo se vuelve blanco por un instante. El transbordador se eleva entonces sobre una lanza de fuego y humo hasta abandonar el plano.
+				^^
+				—Ven a trabajar con nosotros y conviértete en astronauta —dice una voz en off mientras el logo de *New Horizons LLC* pasa a ocupar [el Monitor]—. Te esperamos.";
+				new_line;
+				new_line;
+				return true;
+			}
+		],
+		out_to [;
+			<<Enter DirSalida>>;
+		],
+;
+
+!! @
+Atrezzo -> "pared"
+	has
+		female transparent,
+	with
+		name_f 'pared',
+		name_fp 'paredes',
+		name_m 'muro' 'recubrimiento' 'tabique',
+		name_mp 'muros' 'recubrimientos' 'tabiques',
+		gender G_FEMENINO,
+		adjectives 'crema' 'plastico',
+		!!
+		description [;
+			print "De una de las paredes surge un pequeño asiento.";
+			new_line;
+			return true;
+		],
+;
+
+!! @Banco
+HeavyItem -> -> Banco "banco"
+	class SmartEnterable,
+	has
+		concealed male supporter,
+	with
+		name_f 'banqueta',
+		name_m 'asiento' 'banco',
+		gender G_MASCULINO,
+		adjectives 'plastico',
+		!!
+		description [;
+			print "Surge de la misma estructura plástica de la pared, como una aleta.";
+			new_line;
+			return true;
+		],
+;
+
+!! @DirSalida
+AdjacentRoom -> DirSalida "salida"
+	has
+		female,
+	with
+		name_f 'salida',
+		gender G_FEMENINO,
+		!!
+		before [;
+			Enter:
+				print "Decides abandonar la prueba. Quizá no deseas tanto viajar al espacio, después de todo.";
+				new_line;
+				return true;
+		],
+;
+
+!! @Monitor
+Atrezzo -> Monitor "monitor"
+	has
+		male,
+	with
+		name_f 'pantalla' 'publicidad',
+		name_m 'monitor' 'transbordador',
+		gender G_MASCULINO,
+		!!
+		before [;
+			Attack:
+				if (self.is_broken) {
+					print "Golpeas de nuevo la pantalla rota.";
+				} else {
+					if (second == Perchero || (second == nothing && 
+						IndirectlyContains(player, Perchero))) {
+						self.is_broken = true;
+						print "Revientas la pantalla con el perchero.";
+					} else if (second ~= nothing) {
+						print "Golpeas la pantalla con [el second].";
+					} else {
+						print "Te estiras para golpear la pantalla con el puño.";
+					}
+				}
+				new_line;
+				return true;
+		],
+		description [;
+			if (self.is_broken) {
+				print "La pantalla sigue encendida, aunque ahora sólo muestra distorsiones de psicodelia entre un mosaico de fragmentos de cristal.";
+			} else {
+				print "El transbordador vuelve a atravesar la pantalla de abajo a arriba dejando tras de sí una espesa columna de humo blanco. —Conviértete en astronauta.";
+			}
+			new_line;
+			return true;
+		],
+		reset [;
+			self.is_broken = false;
+		],
+	private
+		is_broken false,
+;
+
+!! @Perchero
+Item -> Perchero "perchero"
+	has
+		concealed male,
+	with
+		name_m 'perchero',
+		gender G_MASCULINO,
+		adjectives 'metalico' 'pie',
+		!!
+		describe [;
+			new_line;
+			print "Has posado [el self] a un lado.";
+			new_line;
+			return true;
+		],
+		description [;
+			print "Un perchero de pie metálico. No tiene nada colgado.";
+			new_line;
+			return true;
+		],
+;
+
+
+!!==============================================================================
+!!
+!!	3) Sala de reconocimiento
+!!
+!!------------------------------------------------------------------------------
+
+!! @DirSalaReconocimiento
+AdjacentRoom DirSalaReconocimiento
+	has
+		female,
+	with
+		short_name [;
+			print "[](sala:DIRECTION_OBJECT) de reconocimiento";
+			return true;
+		],
+		found_in Vestidor SalaServidores,
+		name_f 'sala',
+		gender G_FEMENINO,
+		adjectives 'reconocimiento',
+		!!
+		adjacent_room SalaReconocimiento,
+		before [;
+			Enter:
+				self.AdjacentRoom::before();
+				return true;
+		],
+;
+
+!! @SalaReconocimiento
+Indoors SalaReconocimiento "Sala de reconocimiento"
+	has
+		female,
+	with
+		name_f 'sala',
+		gender G_FEMENINO,
+		adjectives 'reconocimiento',
+		!!
+		b_to [;
+			<<Enter DirVestidor>>;
+		],
+		before [;
+			Smell:
+				print "Notas un olor sutil pero persistente a productos desinfectantes.";
+				new_line;
+				return true;
+		],
+		!! El daemon gestiona la aparición del médico:
+		daemon [;
+			if (self.counter == 1) {
+				StopDaemon(self);
+				new_line;
+				print "Aparece el médico.";
+				new_line;
+				return true;
+			}
+			self.counter++;
+			return true;
+		],
+		description [;
+			print "En comparación con el reducido espacio [del DirVestidor] esta habitación parece enorme";
+			if (self hasnt visited) {
+				print ". Un efecto que se ve reforzado gracias a [un Espejo] que cubre una de las paredes casi en su totalidad y porque prácticamente no hay mobiliario alguno. Lo único destacable es [un Sillon], en medio de la sala, sobre el que se descuelga desde el techo algún tipo de [Dispositivo] con lo que parece la forma de un casco.";
+			} else {
+				print ". Un efecto reforzado por [el Espejo] que cubre una de las paredes casi en su totalidad y por el mobiliario mínimo: [el Sillon] que ocupa el centro de la sala; [una Mesita]; [un Extintor] enganchado a la pared; [el Dispositivo], sea lo que sea, que se descuelga por cables desde el techo y termina en lo que lo que parece la forma de un casco, justo encima [del Sillon].";
+
+			}
+			new_line;
+			return true;
+		],
+		in_to [;
+			<<Enter DirSalaServidores>>;
+		],
+		initial [;
+			if (self hasnt visited) {
+				StartDaemon(self);
+			}
+		],
+		out_to [;
+			<<Enter DirVestidor>>;
+		],
+		reset [;
+			self.counter = 0;
+		],
+	private
+		counter 0,
+;
+
+!! @Dispositivo
+Atrezzo -> Dispositivo "dispositivo"
+	has
+		male,
+	with
+		name_m 'casco' 'dispositivo',
+		gender G_MASCULINO,
+		!!
+;
+
+!! @Espejo
+Atrezzo -> Espejo "espejo"
+	has
+		male,
+	with
+		name_m 'espejo' 'reflejo',
+		gender G_FEMENINO,
+		!!
+		reset [;
+			self.is_broken = false;
+		],
+	private
+		is_broken false,
+;
+
+!! @Extintor
+Item -> Extintor "extintor"
+	has
+		concealed male,
+	with
+		name_m 'extintor',
+		gender G_MASCULINO,
+		!!
+;
+
+!! @Mesita
+Item -> Mesita
+	has
+		concealed female supporter,
+	with
+		short_name [;
+			print "[](mesita) auxiliar";
+			return true;
+		],
+		name_f 'mesa' 'mesita',
+		gender G_FEMENINO,
+		adjectives 'auxiliar',
+		!!
+;
+
+!! @Puerta
+Atrezzo -> Puerta "puerta"
+	has
+		concealed female,
+	with
+		name_f 'puerta',
+		gender G_FEMENINO,
+		adjectives 'privada',
+		!!
+;
+
+!! @Sillon
+HeavyItem -> Sillon
+	class SmartEnterable,
+	has
+		concealed enterable male supporter,
+	with
+		short_name [;
+			print "[](sillón:REMARKABLE_OBJECT) médico";
+			return true;
+		],
+		name_m 'asiento' 'sillon',
+		gender G_MASCULINO,
+		adjectives 'medico',
+		!!
+;
+
+
+!!==============================================================================
+!!
+!!	4) Sala de servidores
+!!
+!!------------------------------------------------------------------------------
+
+!! @DirSalaServidores
+AdjacentRoom DirSalaServidores
+	has
+		female,
+	with
+		short_name [;
+			print "sala de servidores";
+			return true;
+		],
+		found_in SalaReconocimiento,
+		name_f 'sala',
+		gender G_FEMENINO,
+		adjectives 'servidores',
+		!!
+		adjacent_room SalaServidores,
+		before [;
+			Enter:
+				self.AdjacentRoom::before();
+				return true;
+		],
+;
+
+!! @SalaServidores
+Indoors SalaServidores "Sala de servidores"
+	has
+		female,
+	with
+		name_f 'sala',
+		gender G_FEMENINO,
+		adjectives 'servidores',
+		!!
+		b_to [;
+			<<Enter DirSalaReconocimiento>>;
+		],
+		description [;
+			print "Este cuarto está mucho peor iluminado que la sala de reconocimiento. Hay grandes equipos electrónicos, altos hasta el techo, ocupando gran parte del espacio.";
+			new_line;
+			return true;
+		],
+		out_to [;
+			<<Enter DirSalaReconocimiento>>;
+		],
+;
